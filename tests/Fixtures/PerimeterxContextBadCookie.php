@@ -4,14 +4,14 @@ namespace Perimeterx\Tests\Fixtures;
 use Perimeterx\PerimeterxContext;
 use GuzzleHttp\Client;
 
-class PerimeterxContextGoodCookie extends PerimeterxContext
+class PerimeterxContextBadCookie extends PerimeterxContext
 {
     /**
      * PerimeterxContextGoodCookie constructor.
      */
     public function __construct()
     {
-        $ua = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.87 Safari/537.36';
+        $ua = 'PhantomJS';
         $url = 'http://www.perimeterx.com/';
         $this->headers = [
             ['name' => 'user-agent', 'value' => $ua],
@@ -36,6 +36,7 @@ class PerimeterxContextGoodCookie extends PerimeterxContext
         
         $rawResponse = $httpclient->request('POST', '/api/v1/collector', ['body' => PX_ACTIVITY_PAYLOAD, 'headers' => $headers]);
         $response = json_decode($rawResponse->getBody());
+        fwrite(STDOUT, var_dump($response));
         return explode("|", $response->do[1])[3];
     }
 }
