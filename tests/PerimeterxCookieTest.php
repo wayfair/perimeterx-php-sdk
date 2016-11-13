@@ -4,6 +4,7 @@ namespace Perimeterx\Tests;
 
 use Perimeterx\PerimeterxCookieValidator;
 use Perimeterx\Tests\Fixtures\PerimeterxContextGoodCookie;
+use Perimeterx\PerimeterxLogger;
 use PHPUnit\Framework\TestCase;
 
 class PerimeterxCookieTest extends TestCase
@@ -17,7 +18,8 @@ class PerimeterxCookieTest extends TestCase
         $pxCookieValidator = new PerimeterxCookieValidator($ctx, [
             'cookie_key' => PX_COOKIE_KEY,
             'encryption_enabled' => true,
-            'blocking_score' => 60
+            'blocking_score' => 60,
+            'logger' => new PerimeterxLogger()
         ]);
 
         $verify = $pxCookieValidator->verify();
