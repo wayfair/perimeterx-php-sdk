@@ -36,7 +36,6 @@ class PerimeterxContextBadCookie extends PerimeterxContext
         
         $rawResponse = $httpclient->request('POST', '/api/v1/collector', ['body' => PX_ACTIVITY_PAYLOAD, 'headers' => $headers]);
         $response = json_decode($rawResponse->getBody());
-        fwrite(STDOUT, var_dump($response));
         return explode("|", $response->do[1])[3];
     }
 }
