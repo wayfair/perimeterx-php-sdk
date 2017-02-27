@@ -3,9 +3,9 @@
 	use Perimeterx\PerimeterxCLIWorker;
 
 	$perimeterxConfig = [
-	    'app_id' => 'PXMI1FuMjS',
-	    'cookie_key' => '1qoEAOpl5KU/4Uq3CJQXdBsdYgIcltf6oGL1BFqKUJNx8FTj4Wrk/ad+N0s7sFDV',
-	    'auth_token' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzY29wZXMiOlsicmlza19zY29yZSIsInJlc3RfYXBpIl0sImlhdCI6MTQ2NTkwOTQ2OCwic3ViIjoiUFhNSTFGdU1qUyIsImp0aSI6ImY4MjE4YzMyLTRiOGYtNDY1Ni1hNDZjLWJlMjZjMzhjODgzMiJ9.YNWqnHneG3HHegkLz0rq9G3m_NNEkPxOhUCTQBefQsU',
+	    'app_id' => '',
+	    'cookie_key' => '',
+	    'auth_token' => '',
 	    "module_enabled" => true,
 	    "captcha_enabled" => true,
 	    "encryption_enabled" => true,
@@ -30,7 +30,7 @@
 	    "perimeterx_server_host" => "http://localhost:6379/",
 
 	    'custom_user_ip' => function () {
-	        return '5.28.140.25';
+	        return '';
 	    },
 
 	    "local_proxy" => false,
