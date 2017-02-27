@@ -6,6 +6,16 @@ namespace Perimeterx;
 class PerimeterxActivitiesClient
 {
     /**
+    * @var int - perimeterx send activities synchronize mode
+    */
+    const SYNC_MODE = 1;
+
+    /**
+    * @var int - perimeterx send activities asynchronize mode
+    */
+    const ASYNC_MODE = 2;
+
+    /**
      * @var object - perimeterx configuration object
      */
     private $pxConfig;
@@ -22,6 +32,7 @@ class PerimeterxActivitiesClient
     {
         $this->pxConfig = $pxConfig;
         $this->httpClient = $pxConfig['http_client'];
+        $this->queueClient = new PerimeterxQueueClient($pxConfig);
     }
 
     /**
@@ -44,7 +55,7 @@ class PerimeterxActivitiesClient
      * @param PerimeterxContext $pxCtx
      * @param $details
      */
-    public function sendToPerimeterx($activityType, $pxCtx, $details = [])
+    public function sendToPerimeterx($activityType, $pxCtx, $details = [], $send_mode = PerimeterxActivitiesClient::SYNC_MODE)
     {
         if (isset($this->pxConfig['additional_activity_handler'])) {
             $this->pxConfig['additional_activity_handler']($activityType, $pxCtx, $details);
@@ -70,8 +81,24 @@ class PerimeterxActivitiesClient
             'Authorization' => 'Bearer ' . $this->pxConfig['auth_token'],
             'Content-Type' => 'application/json'
         ];
-        $this->httpClient->send('/api/v1/collector/s2s', 'POST', $activities, $headers, $this->pxConfig['api_timeout'], $this->pxConfig['api_connect_timeout']);
+
+        
+        if(PerimeterxActivitiesClient::ASYNC_MODE == $send_mode) {
+            $payload = array(
+                "http" => array(
+                    "method" => "POST",
+                    "path" => "/api/v1/collector/s2s",
+                    "headers" => $headers,
+                ),
+                "activities" => $activities
+            );
+
+            $this->queueClient->send($payload);
+        }else {
+            $this->httpClient->send('/api/v1/collector/s2s', 'POST', $activities, $headers, $this->pxConfig['api_timeout'], $this->pxConfig['api_connect_timeout']);    
+        }  
     }
+
 
     /**
      * @param PerimeterxContext $pxCtx
@@ -98,7 +125,7 @@ class PerimeterxActivitiesClient
         if (!$this->pxConfig['send_page_activities']) {
             return;
         }
-
+        
         $details = [];
         $details['module_version'] = $this->pxConfig['sdk_name'];
         $details['http_version'] = $pxCtx->getHttpVersion();
@@ -107,6 +134,6 @@ class PerimeterxActivitiesClient
             $details['px_cookie'] = $pxCtx->getDecodedCookie();
         }
 
-        $this->sendToPerimeterx('page_requested', $pxCtx, $details);
+        $this->sendToPerimeterx('page_requested', $pxCtx, $details, PerimeterxActivitiesClient::ASYNC_MODE);
     }
 }

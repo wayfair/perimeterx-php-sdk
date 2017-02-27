@@ -27,7 +27,7 @@ namespace Perimeterx;
 
 use Psr\Log\LoggerInterface;
 
-final class Perimeterx
+class Perimeterx
 {
     /**
      * @var array pxConfig risk cookie.
@@ -57,11 +57,16 @@ final class Perimeterx
         return self::$instance;
     }
 
-    private function __construct(array $pxConfig = [])
+    protected function __construct(array $pxConfig = [])
     {
         if (!function_exists("mcrypt_encrypt")) {
             throw new PerimeterxException(PerimeterxException::$MCRYPT_MISSING);
         }
+
+        if(!function_exists("msg_get_queue") || !function_exists("msg_send") || !function_exists("msg_stat_queue")) {
+            throw new PerimeterxExcetion(PerimeterxException::$MESSAGE_QUEUE_MISSING);
+        }
+
         if (!isset($pxConfig['app_id'])) {
             throw new PerimeterxException(PerimeterxException::$APP_ID_MISSING);
         }
@@ -93,6 +98,8 @@ final class Perimeterx
                 'perimeterx_server_host' => 'https://sapi-' . strtolower($pxConfig['app_id']) . '.glb1.perimeterx.net',
                 'module_mode' => Perimeterx::$ACTIVE_MODE,
                 'api_timeout' => 1,
+                'max_bytes_messages_queue' => 1024 * 1024 * 10,
+                'queue_message_type_activities' => 10,
                 'api_connect_timeout' => 1,
                 'local_proxy' => false
             ], $pxConfig);
