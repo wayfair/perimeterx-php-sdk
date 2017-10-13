@@ -280,8 +280,12 @@ final class Perimeterx
 
     /**
      * Public function that contact PerimeterX servers and reset user's score from cache. can be used as part of internal flows
+     *
+     * @param string $resetReason the reason the user's score is being reset. Should be a PerimeterxResetClient::RESET_REASON_* const
+     *
+     * @return bool
      */
-    public function pxReset()
+    public function pxReset($resetReason)
     {
         try {
             if (!$this->pxConfig['module_enabled']) {
@@ -296,7 +300,7 @@ final class Perimeterx
             }
 
             $client = new PerimeterxResetClient($pxCtx, $this->pxConfig);
-            $client->sendResetRequest();
+            $client->sendResetRequest($resetReason);
         } catch (Exception $e) {
             $this->pxConfig['logger']->error('Uncaught exception while resetting perimeterx score' . $e->getCode() . ' ' . $e->getMessage());
         }

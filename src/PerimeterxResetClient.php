@@ -6,7 +6,19 @@ class PerimeterxResetClient extends PerimeterxRiskClient
 {
     const RESET_API_ENDPOINT = '/api/v1/risk/reset';
 
-    public function sendResetRequest()
+    // constants for possible reset reasons
+    const RESET_REASON_CAPTCHA_SOLVED = 'captcha_solved';
+    const RESET_REASON_CUSTOMER_SUPPORT = 'customer_support';
+    const RESET_REASON_OTHER = 'other';
+
+    /**
+     * Send a risk reset request
+     *
+     * @param string $resetReason the reason a score reset is being requested. Should be a self::RESET_REASON_* const
+     *
+     * @return string the request response
+     */
+    public function sendResetRequest($resetReason)
     {
         $requestBody = [
             'request' => [
@@ -14,6 +26,9 @@ class PerimeterxResetClient extends PerimeterxRiskClient
                 'headers' => $this->formatHeaders(),
                 'uri' => $this->pxCtx->getUri(),
                 'url' => $this->pxCtx->getFullUrl()
+            ],
+            'additional' => [
+                'reset_reason' => $resetReason
             ]
         ];
 
