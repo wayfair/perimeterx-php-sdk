@@ -42,7 +42,9 @@ class PerimeterxResetClient extends PerimeterxRiskClient
             'Content-Type' => 'application/json'
         ];
 
-        $response = $this->httpClient->send(self::RESET_API_ENDPOINT, 'POST', $requestBody, $headers, $this->pxConfig['api_timeout'], $this->pxConfig['api_connect_timeout']);
+        $timeout = isset($this->pxConfig['api_reset_timeout']) ? $this->pxConfig['api_reset_timeout'] : $this->pxConfig['api_timeout'];
+        $connect_timeout = isset($this->pxConfig['api_reset_connect_timeout']) ? $this->pxConfig['api_reset_connect_timeout'] : $this->pxConfig['api_connect_timeout'];
+        $response = $this->httpClient->send(self::RESET_API_ENDPOINT, 'POST', $requestBody, $headers, $timeout, $connect_timeout);
 
         return $response;
     }
