@@ -50,6 +50,24 @@ class PerimeterxActivitiesClient
             $this->pxConfig['additional_activity_handler']($activityType, $pxCtx, $details);
         }
 
+        // Optionally defer sending activity until the shutdown handler to reduce client wait time
+        if (!empty($this->pxConfig['defer_page_activity_send'])) {
+            register_shutdown_function([$this, 'performSendToPerimeterx'], $activityType, $pxCtx, $details);
+        } else {
+            $this->performSendToPerimeterx($activityType, $pxCtx, $details);
+        }
+    }
+
+    /**
+     * perform the actual activity send
+     *
+     * @param $activityType
+     * @param PerimeterxContext $pxCtx
+     * @param $details
+     */
+    public function performSendToPerimeterx($activityType, $pxCtx, $details = [])
+    {
+
         $details['cookie_origin'] = $pxCtx->getCookieOrigin();
 
         $details['module_version'] = $this->pxConfig['sdk_name'];
