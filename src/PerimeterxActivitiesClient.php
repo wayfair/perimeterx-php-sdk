@@ -90,7 +90,10 @@ class PerimeterxActivitiesClient
             'Authorization' => 'Bearer ' . $this->pxConfig['auth_token'],
             'Content-Type' => 'application/json'
         ];
-        $this->httpClient->send('/api/v1/collector/s2s', 'POST', $activities, $headers);
+
+        $timeout = isset($this->pxConfig['api_page_activity_timeout']) ? $this->pxConfig['api_page_activity_timeout'] : 0;
+        $connect_timeout = isset($this->pxConfig['api_page_activity_connect_timeout']) ? $this->pxConfig['api_page_activity_connect_timeout'] : 0;
+        $this->httpClient->send('/api/v1/collector/s2s', 'POST', $activities, $headers, $timeout, $connect_timeout);
     }
 
     /**
