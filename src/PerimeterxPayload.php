@@ -139,9 +139,20 @@ abstract class PerimeterxPayload {
         $salt = base64_decode($salt);
         $payload = base64_decode($payload);
 
+        // Prevent empty iterations from throwing warnings in hash_pbkdf2()
+        if (empty($iterations)) {
+            return null;
+        }
+
         $derivation = hash_pbkdf2($digest, $this->cookieSecret, $salt, $iterations, $ivlen + $keylen, true);
         $key = substr($derivation, 0, $keylen);
         $iv = substr($derivation, $keylen);
+
+        // Prevent empty key from throwing warnings in mcrypt_decrypt()
+        if (empty($key)) {
+            return null;
+        }
+
         $payload = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $key, $payload, MCRYPT_MODE_CBC, $iv);
 
         return $this->unpad($payload);
