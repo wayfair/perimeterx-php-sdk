@@ -4,7 +4,7 @@ namespace Perimeterx;
 
 class PerimeterxContext
 {
-    public static $MOBILE_SDK_HEADER = "X-PX-AUTHORIZATION";
+    public static $MOBILE_SDK_HEADER = "X-Px-Authorization";
 
     /**
      * @param $pxConfig array - perimeterx configurations
